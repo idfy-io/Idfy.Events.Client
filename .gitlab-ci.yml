@@ -1,0 +1,21 @@
+variables:
+  MAJOR: '4'
+  MINOR: '0'
+
+.master:
+  variables:
+    VERSION: $MAJOR.$MINOR.$CI_PIPELINE_IID
+  only:
+    - master
+    - gitlab
+
+nuget:
+  extends:
+    - .master
+  stage: build
+  image: mcr.microsoft.com/dotnet/core/sdk:3.1
+  script:
+    - cd src
+    - dotnet pack --configuration Release --include-symbols -p:PackageVersion=$VERSION /p:AssemblyVersion=$VERSION -o packages
+    - dotnet nuget push packages/Idfy.Events.Client.$VERSION.nupkg -k $NUGET_APIKEY -s https://api.nuget.org/v3/index.json
+    - dotnet nuget push packages/Idfy.Events.Entities.$VERSION.nupkg -k $NUGET_APIKEY -s https://api.nuget.org/v3/index.json
