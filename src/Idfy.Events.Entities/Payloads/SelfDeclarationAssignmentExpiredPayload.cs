@@ -1,4 +1,4 @@
-﻿namespace Idfy.Events.Entities
+namespace Idfy.Events.Entities
 {
     public class SelfDeclarationAssignmentExpiredPayload : BaseSelfDeclarationPayload
     {
