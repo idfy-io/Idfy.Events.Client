@@ -145,5 +145,9 @@ namespace Idfy.Events.Entities
         [EnumMember(Value = "self_declaration_assignment_deleted")]
         [Description("When a self declaration assignment is deleted.")]
         SelfDeclarationAssignmentDeleted = 35,
+        
+        [EnumMember(Value = "self_declaration_assignment_expired")]
+        [Description("When a self declaration expires before it is completed by all persons.")]
+        SelfDeclarationAssignmentExpired = 36,
     }
 }
