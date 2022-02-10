@@ -15,7 +15,7 @@ using Rebus.Logging;
 namespace Idfy.Events.Client
 {
     /// <summary>
-    /// Event client that lets you subscribe to events that occurs on your account. 
+    /// Event client that lets you subscribe to events that occurs on your account.
     /// Remember to dispose of the client when your program exits by calling the Dispose() method.
     /// </summary>
     public class EventClient : IDisposable
@@ -31,7 +31,7 @@ namespace Idfy.Events.Client
         private IBus _bus;
         private Action<RebusLoggingConfigurer> _rebusLoggingConfigurer;
         private bool _noRebusLogger;
-        
+
 
 
         /// <summary>
@@ -67,11 +67,11 @@ namespace Idfy.Events.Client
         }
 
         internal bool LogToConsole { get; set; }
-        
+
         internal LogLevel? LogLevel { get; set; }
-        
+
         internal IRebusLoggerFactory RebusLoggerFactory { get; set; }
-        
+
         internal RebusLoggingConfigurer Configurer { get; set; }
 
         internal void Subscribe<T>(Func<T, Task> func) where T : Event
@@ -99,7 +99,7 @@ namespace Idfy.Events.Client
         {
             _adapter = adapter;
             _adapter.Handle<object>(InternalHandler);
-            
+
             _noRebusLogger = true;
             _clientId = clientId;
             _clientSecret = WebUtility.UrlEncode(clientSecret);
@@ -107,18 +107,14 @@ namespace Idfy.Events.Client
             _accountId = accountId;
         }
 
-        
+
 
         private RebusConfigurer ConfigureRebus()
         {
             var config = GetEventClientConfiguration();
 
             return Configure.With(_adapter)
-                #if NET45
-                .Transport(x => x.UseAzureServiceBus(config.ConnectionString, config.QueueName, AzureServiceBusMode.Basic).DoNotCreateQueues())
-                #else
                 .Transport(x => x.UseAzureServiceBus(config.ConnectionString, config.QueueName).DoNotCreateQueues().DoNotCheckQueueConfiguration())
-                #endif
                 .Options(c =>
                 {
                     c.AddNamespaceFilter();
@@ -154,9 +150,9 @@ namespace Idfy.Events.Client
                 {"client_id", _clientId},
                 {"client_secret", _clientSecret}
             };
-            
+
             var tokenResponse = Mapper<TokenResponse>.MapFromJson(Requestor.PostFormData(string.IsNullOrWhiteSpace(_tokenUrl) ? Urls.TokenEndpoint:_tokenUrl, formData));
-            
+
             // Get event configuration
             var eventConfigUrl = $"{Urls.NotificationEndpoint}/client";
 
@@ -177,7 +173,7 @@ namespace Idfy.Events.Client
 
             return eventConfigResponse;
         }
-        
+
         /// <summary>
         /// Internal handler for all message types. Prevents exceptions for events with no registered handler.
         /// </summary>
